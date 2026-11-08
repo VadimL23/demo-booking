@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['room_id', 'user_id', 'starts_at', 'ends_at', 'title'])]
+#[Fillable(['room_id', 'starts_at', 'ends_at', 'title'])]
 class Booking extends Model
 {
     /** @use HasFactory<BookingFactory> */
