@@ -141,6 +141,27 @@ class BookingStoreTest extends TestCase
             ->assertJsonValidationErrors('starts_at');
     }
 
+    public function test_rejects_invalid_calendar_dates_and_nonzero_seconds(): void
+    {
+        $room = Room::factory()->create();
+        Sanctum::actingAs(User::factory()->create());
+
+        $this->postJson('/api/bookings', $this->validPayload($room, [
+            'starts_at' => '2026-02-30T10:00:00+03:00',
+        ]))
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('starts_at');
+
+        $this->postJson('/api/bookings', $this->validPayload($room, [
+            'starts_at' => '2026-11-02T10:00:30+03:00',
+            'ends_at' => '2026-11-02T11:00:30+03:00',
+        ]))
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['starts_at', 'ends_at']);
+
+        $this->assertDatabaseCount('bookings', 0);
+    }
+
     public function test_rejects_overlaps_but_allows_adjacent_bookings_and_another_room(): void
     {
         $user = User::factory()->create();
